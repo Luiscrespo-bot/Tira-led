@@ -1,0 +1,63 @@
+device:
+  manufacturer: UNKNOWN
+  model: UNKNOWN
+  ble_name: "GATT--DEMO"
+  chip: UNKNOWN
+  bluetooth_type: "BLE"
+  mac_address: "ID_WEB: 5j78wPUSmF62CGp2XILyDw=="
+  official_app: "Miracles Star"
+  os: UNKNOWN
+  hardware:
+    length_m: 3
+    power_w: 15
+    voltage_v: 5
+    led_type: "Dream color RGB"
+    controls: ["Physical button", "24-key IR remote", "Bluetooth App"]
+
+bluetooth:
+  type: "BLE"
+
+services:
+  - uuid: "0000fff0-0000-1000-8000-00805f9b34fb"
+    type: "primary"
+
+characteristics:
+  - uuid: "0000fff3-0000-1000-8000-00805f9b34fb"
+    service: "0000fff0-0000-1000-8000-00805f9b34fb"
+    properties: ["WRITE", "WRITE_NO_RESP"]
+    usage: "Command TX (Probable)"
+  - uuid: "0000fff4-0000-1000-8000-00805f9b34fb"
+    service: "0000fff0-0000-1000-8000-00805f9b34fb"
+    properties: ["NOTIFY"]
+    usage: "Status RX (Probable)"
+
+commands: []
+
+experiments:
+  - id: "C-1"
+    payload: "FF"
+    result: "Enviado a fff3. Sin notificación RX."
+    physical_reaction: "PENDIENTE"
+  - id: "C-2"
+    payload: "56 FF 00 00 00 F0 AA"
+    result: "Enviado a fff3. Sin notificación RX."
+    physical_reaction: "PENDIENTE"
+  - id: "C-3"
+    payload: "7E 00 04 F0 00 01 FF 00 EF"
+    result: "Enviado a fff3. Sin notificación RX."
+    physical_reaction: "PENDIENTE"
+
+hypotheses:
+  - description: "El dispositivo utiliza Bluetooth Low Energy (BLE) en lugar de Classic."
+    evidence: "Conexión exitosa mediante Web Bluetooth y árbol GATT expuesto."
+    status: "CONFIRMADO"
+
+confirmed_behavior:
+  - source: "DOCUMENTAL"
+    behavior: "Pulsación corta en botón físico cambia el modo luminoso."
+  - source: "DOCUMENTAL"
+    behavior: "Pulsación de ~3s en botón físico enciende/apaga la tira."
+  - source: "DOCUMENTAL"
+    behavior: "Al conectar la alimentación, se enciende en ciclo de 7 colores por defecto."
+  - source: "DOCUMENTAL"
+    behavior: "Funciones soportadas: ON/OFF, RGB, Brillo, Modos (M1-M8), Velocidad, Temporizador (2/4/6/8H), Música/Ritmo, Sensibilidad Micrófono, Cantidad LEDs, Corrección Orden RGB."

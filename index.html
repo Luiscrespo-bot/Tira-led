@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LED-BLE Analyzer AI</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard">
+        <header class="glass-panel">
+            <div class="title-area">
+                <h1>LED-BLE <span>Analyzer</span></h1>
+                <p>Estación de Ingeniería Inversa y Pruebas GATT</p>
+            </div>
+            <div class="controls-area">
+                <button id="btn-connect" class="btn-primary glow-effect">Escanear y Conectar</button>
+                <button id="btn-disconnect" class="btn-danger" disabled>Desconectar</button>
+            </div>
+        </header>
+
+        <div class="main-grid">
+            <!-- Columna Izquierda -->
+            <div class="left-col">
+                <section class="glass-panel" id="config-panel">
+                    <h2>Configuración Web Bluetooth</h2>
+                    <p class="help-text">La API Web Bluetooth requiere declarar los servicios a los que queremos acceder. He incluido los más comunes para tiras LED, pero puedes modificarlos si nRF Connect te muestra otros.</p>
+                    <div class="input-group">
+                        <label>Filtro de Nombre (Prefijo, ej: Miracles, LED, ELK):</label>
+                        <input type="text" id="name-filter" placeholder="Dejar vacío para ver todos los dispositivos">
+                    </div>
+                    <div class="input-group">
+                        <label>Servicios Opcionales (UUIDs, separados por coma):</label>
+                        <input type="text" id="optional-services" value="0000fff0-0000-1000-8000-00805f9b34fb, 0000ffe5-0000-1000-8000-00805f9b34fb, 0000ffe0-0000-1000-8000-00805f9b34fb, 0000ffd5-0000-1000-8000-00805f9b34fb">
+                    </div>
+                </section>
+
+                <section class="glass-panel" id="device-info">
+                    <h2>Estado del Dispositivo</h2>
+                    <div id="device-details" class="empty-state">Desconectado</div>
+                </section>
+
+                <section class="glass-panel" id="gatt-tree">
+                    <h2>Árbol GATT <span class="badge" id="gatt-badge">0</span></h2>
+                    <div id="services-list" class="empty-state">Conéctate para explorar servicios y características.</div>
+                </section>
+            </div>
+
+            <!-- Columna Derecha -->
+            <div class="right-col">
+                <section class="glass-panel" id="experiment-panel">
+                    <h2>Laboratorio de Paquetes (Experimentos)</h2>
+                    <div class="input-group">
+                        <label>Characteristic Destino (Selecciona en el árbol GATT):</label>
+                        <input type="text" id="target-uuid" placeholder="Ej: 0000fff3-..." readonly>
+                    </div>
+                    <div class="input-group">
+                        <label>Comando (Hexadecimal, ej: 01 FF 00 00):</label>
+                        <input type="text" id="hex-payload" placeholder="7E 04 04 F0 00 01 FF 00 EF" disabled>
+                    </div>
+                    <div class="action-buttons">
+                        <button id="btn-send" class="btn-primary" disabled>Enviar Comando (Write)</button>
+                        <button id="btn-fuzz" class="btn-secondary" style="margin-left: 10px;" disabled>Auto-Fuzzing (Probar Todos)</button>
+                    </div>
+                </section>
+
+                <section class="glass-panel terminal-section">
+                    <h2>Terminal / Logs</h2>
+                    <div id="terminal"></div>
+                    <button id="btn-clear-log" class="btn-secondary btn-small" style="margin-top: 10px;">Limpiar Consola</button>
+                </section>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
