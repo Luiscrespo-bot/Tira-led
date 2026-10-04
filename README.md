@@ -496,8 +496,8 @@ Especial reconocimiento a:
 
 ## 🌐 Redes sociales
 
-- Instagram: [@tuusuario](https://instagram.com/tuusuario)
-- GitHub: [Luchx_crespoo](https://github.com/luchx_crespoo)
+- Instagram: [@luchx_crespoo](https://instagram.com/luchx_crespoo)
+- GitHub: [Luiscrespo-bot](https://github.com/Luiscrespo-bot)
 
 **Última actualización:** Octubre 2026  
 **Estado del Proyecto:** ✅ Completado y Funcional  
