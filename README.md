@@ -494,6 +494,11 @@ Especial reconocimiento a:
 
 ---
 
+## 🌐 Redes sociales
+
+- Instagram: [@tuusuario](https://instagram.com/tuusuario)
+- GitHub: [Luchx_crespoo](https://github.com/luchx_crespoo)
+
 **Última actualización:** Octubre 2026  
 **Estado del Proyecto:** ✅ Completado y Funcional  
 **Licencia:** Educativa y de Investigación
