@@ -1,78 +1,142 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LED-BLE Analyzer AI</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Control Tira LED (GATT--DEMO)</title>
+<style>
+  :root{--bg:#10131a;--card:#1a1f2b;--tx:#e8ecf4;--mut:#8b94a8;--ac:#6c8cff}
+  *{box-sizing:border-box}
+  body{margin:0;padding:16px;background:var(--bg);color:var(--tx);font:15px system-ui,sans-serif;max-width:560px;margin:auto}
+  h1{font-size:20px;margin:0 0 12px}
+  .card{background:var(--card);border-radius:12px;padding:14px;margin-bottom:12px}
+  label{display:block;color:var(--mut);margin:8px 0 4px;font-size:13px}
+  button{background:var(--ac);color:#fff;border:0;border-radius:8px;padding:9px 14px;margin:3px 3px 3px 0;font-size:14px;cursor:pointer}
+  button.sec{background:#2a3144}
+  input[type=range]{width:100%}
+  input[type=color]{width:100%;height:44px;border:0;background:none}
+  input[type=number]{width:90px;padding:7px;border-radius:6px;border:1px solid #333b50;background:#10131a;color:var(--tx)}
+  #log{font:12px ui-monospace,monospace;color:var(--mut);height:140px;overflow:auto;white-space:pre-wrap}
+  #st{color:var(--mut);font-size:13px}
+</style>
 </head>
 <body>
-    <div class="dashboard">
-        <header class="glass-panel">
-            <div class="title-area">
-                <h1>LED-BLE <span>Analyzer</span></h1>
-                <p>Estación de Ingeniería Inversa y Pruebas GATT</p>
-            </div>
-            <div class="controls-area">
-                <button id="btn-connect" class="btn-primary glow-effect">Escanear y Conectar</button>
-                <button id="btn-disconnect" class="btn-danger" disabled>Desconectar</button>
-            </div>
-        </header>
+<h1>Control Tira LED</h1>
+<div class="card">
+  <button id="conn">Conectar</button>
+  <span id="st">Desconectado</span>
+</div>
 
-        <div class="main-grid">
-            <!-- Columna Izquierda -->
-            <div class="left-col">
-                <section class="glass-panel" id="config-panel">
-                    <h2>Configuración Web Bluetooth</h2>
-                    <p class="help-text">La API Web Bluetooth requiere declarar los servicios a los que queremos acceder. He incluido los más comunes para tiras LED, pero puedes modificarlos si nRF Connect te muestra otros.</p>
-                    <div class="input-group">
-                        <label>Filtro de Nombre (Prefijo, ej: Miracles, LED, ELK):</label>
-                        <input type="text" id="name-filter" placeholder="Dejar vacío para ver todos los dispositivos">
-                    </div>
-                    <div class="input-group">
-                        <label>Servicios Opcionales (UUIDs, separados por coma):</label>
-                        <input type="text" id="optional-services" value="0000fff0-0000-1000-8000-00805f9b34fb, 0000ffe5-0000-1000-8000-00805f9b34fb, 0000ffe0-0000-1000-8000-00805f9b34fb, 0000ffd5-0000-1000-8000-00805f9b34fb">
-                    </div>
-                </section>
+<div class="card">
+  <button onclick="power(true)">Encender</button>
+  <button class="sec" onclick="power(false)">Apagar</button>
+  <label>Color</label>
+  <input type="color" id="col" value="#ff0000">
+  <label>Brillo: <span id="bv">1000</span></label>
+  <input type="range" id="br" min="3" max="1000" value="1000">
+  <label>Velocidad: <span id="sv">50</span></label>
+  <input type="range" id="sp" min="0" max="100" value="50">
+</div>
 
-                <section class="glass-panel" id="device-info">
-                    <h2>Estado del Dispositivo</h2>
-                    <div id="device-details" class="empty-state">Desconectado</div>
-                </section>
+<div class="card">
+  <label>Modo / efecto (número)</label>
+  <input type="number" id="mode" value="1" min="0" max="255">
+  <button onclick="setMode(+mode.value)">Aplicar modo</button>
+  <label>Cantidad de LEDs (8–300)</label>
+  <input type="number" id="leds" value="30" min="8" max="300">
+  <button onclick="setLeds(+leds.value)">Aplicar</button>
+  <label>Paquete hexadecimal manual (el 0xBC...0x55 se arma solo)</label>
+  <input id="raw" placeholder="ej: 04 06 00 00 03 E8 00 00" style="width:100%;padding:7px;border-radius:6px;border:1px solid #333b50;background:#10131a;color:var(--tx)">
+  <button class="sec" onclick="sendRaw()">Enviar</button>
+</div>
 
-                <section class="glass-panel" id="gatt-tree">
-                    <h2>Árbol GATT <span class="badge" id="gatt-badge">0</span></h2>
-                    <div id="services-list" class="empty-state">Conéctate para explorar servicios y características.</div>
-                </section>
-            </div>
+<div class="card"><div id="log"></div></div>
 
-            <!-- Columna Derecha -->
-            <div class="right-col">
-                <section class="glass-panel" id="experiment-panel">
-                    <h2>Laboratorio de Paquetes (Experimentos)</h2>
-                    <div class="input-group">
-                        <label>Characteristic Destino (Selecciona en el árbol GATT):</label>
-                        <input type="text" id="target-uuid" placeholder="Ej: 0000fff3-..." readonly>
-                    </div>
-                    <div class="input-group">
-                        <label>Comando (Hexadecimal, ej: 01 FF 00 00):</label>
-                        <input type="text" id="hex-payload" placeholder="7E 04 04 F0 00 01 FF 00 EF" disabled>
-                    </div>
-                    <div class="action-buttons">
-                        <button id="btn-send" class="btn-primary" disabled>Enviar Comando (Write)</button>
-                        <button id="btn-fuzz" class="btn-secondary" style="margin-left: 10px;" disabled>Auto-Fuzzing (Probar Todos)</button>
-                    </div>
-                </section>
+<script>
+// Protocolo (extraído de la app Miracles Star): 0xBC, cmd, len, datos..., 0x55. Sin checksum.
+const SVC = '0000fff0-0000-1000-8000-00805f9b34fb';
+const TX  = '0000fff3-0000-1000-8000-00805f9b34fb';
+const RX  = '0000fff4-0000-1000-8000-00805f9b34fb';
+let dev, tx, busy = false;
+const $ = id => document.getElementById(id);
+const log = m => { const l = $('log'); l.textContent += new Date().toLocaleTimeString() + '  ' + m + '\n'; l.scrollTop = l.scrollHeight; };
+const hex = a => [...a].map(b => b.toString(16).padStart(2,'0')).join(' ');
 
-                <section class="glass-panel terminal-section">
-                    <h2>Terminal / Logs</h2>
-                    <div id="terminal"></div>
-                    <button id="btn-clear-log" class="btn-secondary btn-small" style="margin-top: 10px;">Limpiar Consola</button>
-                </section>
-            </div>
-        </div>
-    </div>
-    <script src="app.js"></script>
+async function connect() {
+  try {
+    dev = await navigator.bluetooth.requestDevice({
+      filters: [{ namePrefix: 'GATT' }],
+      optionalServices: [SVC]
+    });
+    dev.addEventListener('gattserverdisconnected', () => { $('st').textContent = 'Desconectado'; log('desconectado'); });
+    const srv = await dev.gatt.connect();
+    const svc = await srv.getPrimaryService(SVC);
+    tx = await svc.getCharacteristic(TX);
+    try {
+      const rx = await svc.getCharacteristic(RX);
+      await rx.startNotifications();
+      rx.addEventListener('characteristicvaluechanged', e => log('RX ← ' + hex(new Uint8Array(e.target.value.buffer))));
+    } catch (e) { log('sin notificaciones: ' + e.message); }
+    $('st').textContent = 'Conectado a ' + dev.name;
+    log('conectado');
+  } catch (e) { log('error: ' + e.message); }
+}
+
+async function send(cmd, data) {
+  if (!tx) { log('no conectado'); return; }
+  const pkt = new Uint8Array([0xBC, cmd, data.length, ...data, 0x55]);
+  // La app divide en bloques de 20 bytes; nuestros paquetes son más cortos.
+  while (busy) await new Promise(r => setTimeout(r, 10));
+  busy = true;
+  try { await tx.writeValue(pkt); log('TX → ' + hex(pkt)); }
+  catch (e) { log('error TX: ' + e.message); }
+  busy = false;
+}
+
+const be16 = n => [(n >> 8) & 255, n & 255];
+
+// 0x01: encendido/apagado (00 = encender, 01 = apagar según la app; verifícalo con tu tira)
+const power = on => send(0x01, [on ? 0 : 1]);
+
+// 0x04: color fijo en HSV: hue 0–360 (2 bytes), saturación 0–1000 (2 bytes), 00 00
+function rgbToHsv(r, g, b) {
+  r/=255; g/=255; b/=255;
+  const mx = Math.max(r,g,b), mn = Math.min(r,g,b), d = mx - mn;
+  let h = 0;
+  if (d) {
+    if (mx === r) h = ((g - b) / d) % 6; else if (mx === g) h = (b - r) / d + 2; else h = (r - g) / d + 4;
+    h *= 60; if (h < 0) h += 360;
+  }
+  return [Math.round(h), mx ? d / mx : 0];
+}
+function setColor(hexColor) {
+  const n = parseInt(hexColor.slice(1), 16);
+  const [h, s] = rgbToHsv(n >> 16, (n >> 8) & 255, n & 255);
+  return send(0x04, [...be16(h), ...be16(Math.round(s * 1000)), 0, 0]);
+}
+// 0x05: brillo 3–1000 (2 bytes) + 4 bytes en 0
+const setBright = v => send(0x05, [...be16(Math.max(3, v)), 0, 0, 0, 0]);
+// 0x08: velocidad de efectos (1 byte)
+const setSpeed = v => send(0x08, [v]);
+// 0x06: modo (la app envía n/255 y n%255)
+const setMode = n => send(0x06, [Math.floor(n / 255), n % 255]);
+// 0x03: cantidad de LEDs (8–300)
+const setLeds = n => (n >= 8 && n <= 300) ? send(0x03, be16(n)) : log('LEDs debe estar entre 8 y 300');
+function sendRaw() {
+  const b = $('raw').value.trim().split(/\s+/).filter(Boolean).map(x => parseInt(x, 16));
+  if (b.length) send(b[0], b.slice(2));
+}
+
+let t = 0;
+const throttle = f => { const n = Date.now(); if (n - t > 80) { t = n; f(); } };
+$('conn').onclick = connect;
+$('col').oninput = e => throttle(() => setColor(e.target.value));
+$('col').onchange = e => setColor(e.target.value);
+$('br').oninput = e => { $('bv').textContent = e.target.value; throttle(() => setBright(+e.target.value)); };
+$('br').onchange = e => setBright(+e.target.value);
+$('sp').oninput = e => { $('sv').textContent = e.target.value; throttle(() => setSpeed(+e.target.value)); };
+$('sp').onchange = e => setSpeed(+e.target.value);
+if (!navigator.bluetooth) log('Este navegador no soporta Web Bluetooth. Usa Chrome o Edge.');
+</script>
 </body>
 </html>
