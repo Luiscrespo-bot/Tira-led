@@ -1,0 +1,303 @@
+# Tira LED "Miracles Star" (`GATT--DEMO`): protocolo BLE y guía para crear apps
+
+Documentación del proceso completo: cómo se descubrió el protocolo, cómo leer el código decompilado y cómo construir tus propias apps.
+
+> Dispositivo: tira LED RGB "Dream color", 3 m, USB 5 V, controlada por la app **Miracles Star** (paquete `com.findn.mrstar`, v1.0.1).
+> Nombre BLE: `GATT--DEMO`.
+
+---
+
+## 1. Resumen
+
+- El protocolo **no tiene cifrado, ni handshake, ni checksum**.
+- Cada comando es un paquete con esta forma:
+
+```
+0xBC | comando | longitud | datos (longitud bytes) | 0x55
+```
+
+- Se escribe en la característica `0000FFF3-0000-1000-8000-00805f9b34fb` del servicio `0000FFF0-0000-1000-8000-00805f9b34fb`.
+- Se obtuvo **decompilando el APK de la app oficial**, no con fuzzing ni capturando tráfico.
+
+---
+
+## 2. Por qué falló el fuzzing inicial
+
+Se probaron 10 protocolos comerciales (Triones, Zengge, HappyLighting, etc.) contra `fff3` y la tira no reaccionó. La conclusión original fue "hay cifrado de Lenze". Era incorrecta. La causa real:
+
+1. Cada protocolo comercial tiene su propia forma de paquete. Ninguno de los 10 era este.
+2. Un paquete que el chip no reconoce se descarta sin error. El silencio **no prueba cifrado**, solo que el formato no coincide.
+3. La capa BLE (GATT) acepta cualquier escritura; el firmware decide después qué hacer con los bytes.
+
+**Lección:** antes de asumir cifrado, buscar la fuente del protocolo (la app oficial).
+
+---
+
+## 3. Método paso a paso (de inicio a fin)
+
+### Fase 1: Identificar el dispositivo
+Se leyó el empaque y el manual: tira de 3 m, 15 W, USB 5 V, control IR de 24 teclas, app Miracles Star. Desarrollador de la app: ShenZhen Lenze Technology.
+
+### Fase 2: Descubrir el servidor GATT
+Con una herramienta propia en Web Bluetooth se conectó a `GATT--DEMO` y se enumeró:
+
+| Elemento | UUID | Propiedades |
+|---|---|---|
+| Servicio | `0000fff0-...` | |
+| TX | `0000fff3-...` | WRITE, WRITE_WITHOUT_RESPONSE |
+| RX | `0000fff4-...` | NOTIFY |
+
+### Fase 3: Fuzzing (fallido)
+Ver sección 2.
+
+### Fase 4: Decompilar la app oficial
+Este fue el paso que resolvió todo.
+
+**4.1 Obtener el APK.** El archivo era un `.xapk` (un ZIP que contiene el APK base y APKs de idioma/recursos).
+
+```bash
+unzip MR_Star_1_0_1_APKPure.xapk -d xapk
+cat xapk/manifest.json        # nombre de paquete, permisos
+```
+
+Los permisos ya daban pistas: Bluetooth, ubicación (necesaria para escanear BLE) y `RECORD_AUDIO` (modo micrófono).
+
+**4.2 Descomprimir el APK base.** El código está en `classes.dex`.
+
+```bash
+mkdir base && cd base && unzip ../com.findn.mrstar.apk
+ls    # AndroidManifest.xml, classes.dex, res/, assets/ ...
+```
+
+**4.3 Decompilar con Androguard** (librería de Python; también sirve `jadx`, que es más cómodo si puedes instalarlo):
+
+```bash
+pip install androguard
+```
+
+```python
+from androguard.misc import AnalyzeAPK
+a, d, dx = AnalyzeAPK("com.findn.mrstar.apk")
+
+# Listar clases de la app (paquete com.findn)
+for c in dx.get_classes():
+    if "findn" in c.name:
+        print(c.name)
+```
+
+Resultado: apenas 21 clases propias (`MainActivity`, `AdjustFragment`, `ModeFragment`, `TimerFragment`, `MusicFragment`, `MicroPhoneFragment`...). El resto del código es de librerías (Material, Kotlin, una librería BLE).
+
+**4.4 Buscar los UUID.** Los UUID que ya conocíamos son el hilo para tirar:
+
+```python
+for s, sa in dx.strings.items():
+    if "0000FFF3" in s:
+        for cls, meth in sa.get_xref_from():
+            print(cls.name, meth.name)
+```
+
+Salida: el UUID `FFF3` solo se usa en un método: **`MyApplication.d(byte[])`**. Es la función única que envía datos a la tira.
+
+**4.5 Leer `MyApplication.d(byte[])`.** Hace tres cosas:
+- Si el arreglo mide ≤ 20 bytes, lo escribe de una vez en `FFF3`.
+- Si mide más, lo parte en bloques de 20 bytes con 200 ms de pausa entre ellos (límite del MTU por defecto de BLE).
+- No modifica los bytes: **no hay cifrado ni checksum aquí.**
+
+**4.6 Buscar quién llama a esa función.** Ahora la pregunta es: ¿qué bytes le pasan?
+
+```python
+for m in dx.get_methods():
+    if m.name == "d" and m.class_name == "Lcom/findn/MyApplication;":
+        for cls, meth, off in m.get_xref_from():
+            print(cls.name, meth.name)
+```
+
+Aparecen unas 24 funciones: manejadores de botones, sliders, el selector de color, el temporizador, etc. Cada una arma su paquete.
+
+**4.7 Leer cada constructor de paquetes.** Se decompiló cada llamador y se buscaron los `new byte[...]`. Todos empiezan con `-68` (= `0xBC`) y terminan con `85` (= `0x55`). En Java los `byte` tienen signo, por eso `0xBC` aparece como `-68`:
+
+```
+-68 & 0xFF = 188 = 0xBC
+85 = 0x55
+```
+
+Un ejemplo (el botón de encendido):
+```java
+byte[] v = {-68, 7, 1, 0, 85};   // BC 07 01 00 55
+```
+
+**4.8 Entender las conversiones numéricas.**
+- **Color:** la app convierte RGB a HSV (`Color.RGBToHSV`) y envía `hue` (0–360) y `saturación × 1000`. El número `1148846080` que aparece en el decompilado es la representación en bits de `1000.0f` (un artefacto del decompilador), así que significa "multiplicar por 1000".
+- **Números de 2 bytes:** `(n / 256, n % 256)`, es decir, big-endian.
+- **Modo:** se envía `n / 255` y `n % 255` (se usa 255, no 256).
+
+### Fase 5: Implementar y probar
+Se escribió `tira-led-control.html` (Web Bluetooth) aplicando el formato. **Resultado: funcionó.**
+
+---
+
+## 4. Cómo leer código decompilado (técnica general)
+
+Esta técnica sirve para cualquier dispositivo BLE con app Android:
+
+1. **Empieza por los UUID** (strings de la forma `0000XXXX-0000-1000-8000-00805f9b34fb`). Dicen dónde se escribe.
+2. **Sube por las referencias:** quién usa ese UUID → quién llama a esa función. Así llegas a todos los botones sin leer el código entero.
+3. **Ignora las librerías.** Solo importa el paquete propio (aquí `com.findn`).
+4. **Ten en cuenta que el decompilado tiene ruido:**
+   - Nombres de variables inventados (`v0_3`, `v7_1`).
+   - Enteros enormes que en realidad son floats (`1148846080` = `1000.0f`, `1017370378` ≈ `0.01f`).
+   - `byte` con signo: `-68` es `0xBC`.
+5. **Busca patrones comunes:** si todos los paquetes empiezan y terminan igual, el resto es "comando + longitud + datos".
+6. **Verifica con la tira:** el decompilado propone, la prueba real confirma.
+
+Alternativa o complemento: capturar tráfico real con el registro HCI de Android (Opciones de desarrollador → Registro de espionaje Bluetooth) y abrirlo con Wireshark. Sirve para validar lo que se leyó en el código.
+
+---
+
+## 5. Referencia del protocolo
+
+Formato general: `BC cmd len datos... 55`
+
+| Función | Cmd | Longitud | Datos | Ejemplo |
+|---|---|---|---|---|
+| Orden RGB / selector | `02` | 1 | índice (1, 2, 3...) | `BC 02 01 01 55` |
+| Cantidad de LEDs | `03` | 2 | n (8–300), big-endian | `BC 03 02 00 1E 55` (30 LEDs) |
+| **Color fijo** | `04` | 6 | hue (2 B), sat×1000 (2 B), `00 00` | `BC 04 06 00 00 03 E8 00 00 55` (rojo) |
+| **Brillo** | `05` | 6 | 3–1000 (2 B), `00 00 00 00` | `BC 05 06 03 E8 00 00 00 00 55` |
+| **Modo / efecto** | `06` | 2 | `n/255`, `n%255` | `BC 06 02 00 05 55` (modo 5) |
+| Encendido (flag) | `07` | 1 | `00` / `01` | `BC 07 01 00 55` |
+| **Velocidad** | `08` | 1 | 0–100 | `BC 08 01 32 55` |
+| Temporizador | `0D` | 6 | ver nota | `BC 0D 06 01 .. .. .. .. .. 55` |
+| Modo micrófono | `0F` | 1 | `01` | `BC 0F 01 01 55` |
+| Sensibilidad micrófono | `12` | 1 | 0–100 | `BC 12 01 50 55` |
+| Comando `13` | `13` | 2 | valor 2 bytes | usado en el módulo de color (sin confirmar) |
+| Apagado desde la UI (switch) | `01` | 1 | `00` / `01` | `BC 01 01 00 55` |
+
+Notas:
+- Los valores `00`/`01` de encendido y apagado se leen un poco confusos en el código. **Verifica con tu tira cuál es cuál.**
+- **Temporizador (`0D`):** el paquete es `BC 0D 06 01 [0=enc/1=apag] [activo] [dia-bitmask] [hora] [min] 55`, pero no se comprobó la semántica exacta de cada byte.
+- Los comandos `02`, `13` y la función exacta de los modos (`06`) no se verificaron uno por uno.
+
+### Cómo calcular el color en tu código
+
+```python
+import colorsys
+
+def paquete_color(r, g, b):
+    h, s, v = colorsys.rgb_to_hsv(r/255, g/255, b/255)
+    hue = round(h * 360)
+    sat = round(s * 1000)
+    return bytes([0xBC, 0x04, 0x06, hue >> 8, hue & 255, sat >> 8, sat & 255, 0, 0, 0x55])
+```
+
+Nota: la app envía **solo hue y saturación**, y el brillo va aparte (cmd `05`). Para un color tenue, baja el brillo, no el valor HSV.
+
+---
+
+## 6. Cómo crear tus propias apps
+
+La idea es siempre la misma, sin importar la plataforma:
+
+1. Conectar por BLE a `GATT--DEMO`.
+2. Obtener la característica `FFF3`.
+3. Armar `[0xBC, cmd, len, ...datos, 0x55]`.
+4. Escribirla (con o sin respuesta). Si el paquete supera 20 bytes, partirlo en bloques de 20.
+
+### 6.1 Web (Web Bluetooth): `tira-led-control.html`
+Funciona en Chrome o Edge, en `https` o `localhost`. Estructura mínima:
+
+```javascript
+const SVC = '0000fff0-0000-1000-8000-00805f9b34fb';
+const TX  = '0000fff3-0000-1000-8000-00805f9b34fb';
+
+const dev = await navigator.bluetooth.requestDevice({
+  filters: [{ namePrefix: 'GATT' }], optionalServices: [SVC]
+});
+const srv = await dev.gatt.connect();
+const tx  = await (await srv.getPrimaryService(SVC)).getCharacteristic(TX);
+
+const send = (cmd, data) =>
+  tx.writeValue(new Uint8Array([0xBC, cmd, data.length, ...data, 0x55]));
+
+await send(0x05, [0x03, 0xE8, 0, 0, 0, 0]);   // brillo máximo
+```
+
+Importante: Web Bluetooth **solo** muestra los servicios declarados en `optionalServices`.
+
+### 6.2 Python (escritorio, scripts, automatización): con `bleak`
+
+```bash
+pip install bleak
+```
+
+```python
+import asyncio, colorsys
+from bleak import BleakScanner, BleakClient
+
+TX = "0000fff3-0000-1000-8000-00805f9b34fb"
+
+def pkt(cmd, data):
+    return bytes([0xBC, cmd, len(data), *data, 0x55])
+
+def color(r, g, b):
+    h, s, _ = colorsys.rgb_to_hsv(r/255, g/255, b/255)
+    h, s = round(h*360), round(s*1000)
+    return pkt(0x04, [h >> 8, h & 255, s >> 8, s & 255, 0, 0])
+
+async def main():
+    dev = await BleakScanner.find_device_by_filter(
+        lambda d, ad: (d.name or "").startswith("GATT"), timeout=10)
+    async with BleakClient(dev) as c:
+        await c.write_gatt_char(TX, color(255, 0, 0), response=False)
+        await asyncio.sleep(1)
+        await c.write_gatt_char(TX, color(0, 0, 255), response=False)
+
+asyncio.run(main())
+```
+
+Con esto puedes hacer: atajos de teclado, avisos de notificaciones, sincronizar con Spotify, reaccionar a la pantalla o al audio del equipo.
+
+### 6.3 Sincronizar con música (idea de arquitectura)
+La app oficial lo hace así, y puedes replicarlo:
+1. Capturar audio (micrófono o salida del sistema).
+2. Calcular una FFT y quedarte con la frecuencia dominante y el volumen.
+3. Mapear frecuencia → hue y volumen → brillo.
+4. Enviar `cmd 04` (color) y `cmd 05` (brillo) a unos 10–20 paquetes por segundo. No satures el enlace BLE.
+
+### 6.4 Móvil o microcontrolador
+- **Android:** `BluetoothGatt` con los mismos UUID.
+- **ESP32 como puente:** el ESP32 se conecta a la tira por BLE y expone una API WiFi/MQTT, para integrarla con Home Assistant.
+
+### 6.5 Consejos al hacer apps
+- **Limita la tasa de envío** (throttle). Un slider genera cientos de eventos por segundo.
+- **Usa `writeWithoutResponse`** para efectos rápidos.
+- **Maneja desconexiones:** reconecta automáticamente.
+- **Cola de escritura:** en BLE no se pueden solapar escrituras; encola los paquetes.
+- **Una sola conexión a la vez:** si la app oficial está conectada, tu app no podrá conectarse. Ciérrala primero.
+
+---
+
+## 7. Pendientes por verificar
+
+- [ ] Semántica exacta de `00`/`01` en encendido y apagado (cmd `01` y `07`).
+- [ ] Lista de modos: probar `06` con n = 1, 2, 3... y anotar cada efecto.
+- [ ] Comando `02` (orden RGB): qué valor corresponde a RGB, GRB, BRG, etc.
+- [ ] Comando `13`.
+- [ ] Temporizador (`0D`): significado de cada byte.
+- [ ] ¿Responde algo por `FFF4` (notify)? Hasta ahora no se observó nada útil.
+
+---
+
+## 8. Lecciones aprendidas
+
+1. **El silencio no es cifrado.** Si un dispositivo ignora tus paquetes, lo más probable es que el formato sea distinto.
+2. **La app oficial es la mejor documentación.** Decompilar suele ser más rápido que adivinar o capturar tráfico.
+3. **Empieza por lo que ya sabes** (los UUID) y sigue las referencias hacia atrás.
+4. **Documenta cada hipótesis y descártala con evidencia.** Aquí, la hipótesis de "cifrado de Lenze" se descartó leyendo el código.
+5. **Protocolos de tiras baratas suelen ser simples:** cabecera fija, comando, longitud, datos y cola fija.
+
+---
+
+## 9. Aviso
+
+Esta investigación se hizo sobre un dispositivo propio, con fines de interoperabilidad (controlarlo sin depender de la app oficial). Respeta los términos de uso y las leyes de tu país al decompilar software de terceros.
