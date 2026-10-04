@@ -1,312 +1,176 @@
-# Licencia de Investigación Académica y Uso Personal (LIAU)
+# Licencia de Uso Educativo, Personal e Investigación (LUEI)
 
-**Versión 1.0**
+Versión 1.1
 
-## Términos y Condiciones
+## 1. Introducción
 
-### 1. Definiciones
+El presente documento establece los términos y condiciones bajo los cuales se autoriza el uso del software, código, documentación, archivos y materiales asociados contenidos en este repositorio (en adelante, el “Software”).
 
-- **Software**: El código, documentación y herramientas incluidas en este repositorio (Tira LED Control & Reverse Engineering Project)
-- **Usuario**: Cualquier persona física que descargue, clone o utilice el Software
-- **Uso Académico**: Investigación, educación, aprendizaje y desarrollo profesional sin ánimo de lucro
-- **Uso Personal**: Utilización privada en dispositivos propios sin objetivo comercial
-- **Uso Comercial**: Cualquier forma de comercialización, venta, licenciamiento o monetización del Software o sus derivados
-- **Distribuidor Original**: Luis Crespo Soliz (Luiscrespo-bot)
+El titular de los derechos es Luis Crespo Soliz, identificado como propietario del repositorio y responsable del contenido original publicado en:
 
----
+https://github.com/Luiscrespo-bot/Tira-led
 
-### 2. Permisos Otorgados
-
-Se concede permiso, de forma **GRATUITA** e **IRREVOCABLE**, para:
-
-#### 2.1 Uso Académico ✅
-- 📚 Estudiar el código fuente
-- 🔬 Realizar investigación científica
-- 🎓 Propósitos educativos en instituciones académicas
-- 📖 Enseñanza y capacitación sin ánimo de lucro
-- 🏫 Proyectos de grado y tesis universitarias
-
-#### 2.2 Uso Personal ✅
-- 💻 Instalar y usar en dispositivos propios
-- 🔧 Modificar para necesidades personales
-- 🛠️ Crear derivadas para uso privado no comercial
-- 📝 Documentar cambios personales
-
-#### 2.3 Derechos de Distribución Académica ✅
-- 📤 Compartir con fines educativos (universidades, institutos)
-- 🤝 Colaboración en proyectos académicos
-- 📚 Inclusión en materiales de enseñanza (sin lucro)
+El uso del Software está sujeto a esta Licencia. Cualquier uso que no esté expresamente autorizado por este documento queda prohibido.
 
 ---
 
-### 3. Restricciones Prohibidas ❌
+## 2. Objeto de la Licencia
 
-**ESTÁ ABSOLUTAMENTE PROHIBIDO:**
+La presente licencia tiene por finalidad permitir:
 
-#### 3.1 Usos Comerciales Directos ❌
-- ❌ Vender el Software o versiones modificadas
-- ❌ Ofertar servicios basados en el Software sin permiso explícito
-- ❌ Integrar en productos comerciales sin licencia especial
-- ❌ Cobrar por acceso al Software o sus funcionalidades
+- uso personal;
+- uso académico;
+- uso investigativo;
+- aprendizaje técnico y desarrollo sin ánimo de lucro;
+- modificación del Software para fines no comerciales.
 
-#### 3.2 Usos Comerciales Indirectos ❌
-- ❌ Usar en aplicaciones SaaS (Software as a Service) de pago
-- ❌ Integrar en aplicaciones móviles comerciales
-- ❌ Crear servidores o servicios en la nube de pago
-- ❌ Usar en productos IoT vendidos comercialmente
-- ❌ Monetizar a través de publicidad o datos
-
-#### 3.3 Falsificación y Apropiación ❌
-- ❌ Reclamar autoría o crédito del Software original
-- ❌ Eliminar avisos de licencia o créditos
-- ❌ Registrar como marca o patente propia
-- ❌ Vender como producto original sin reconocimiento
-
-#### 3.4 Distribuidor No Autorizado ❌
-- ❌ Redistribuir versiones modificadas comercialmente
-- ❌ Crear copias no autorizadas para venta
-- ❌ Actuar como intermediario comercial
+No constituye autorización para uso comercial, distribución de carácter comercial, venta, monetización ni explotación económica del Software o de cualquier derivado del mismo sin consentimiento previo y por escrito del titular de los derechos.
 
 ---
 
-### 4. Consequencias del Mal Uso
+## 3. Permisos Otorgados
 
-#### 4.1 Responsabilidad Civil
-Cualquier Usuario que viole los términos de esta licencia será considerado responsable de:
+Se autoriza a cualquier persona o institución el uso del Software bajo las siguientes condiciones:
 
-- **Daños y Perjuicios**: Debe indemnizar al Distribuidor Original por ganancias no percibidas
-- **Ganancias Ilícitas**: Restitución del 100% de las ganancias obtenidas mediante el mal uso
-- **Costos Legales**: Todos los gastos de abogados, procedimientos judicales y trámites administrativos
-- **Daño Moral**: Compensación adicional por daño a la reputación
+### 3.1 Uso Personal
 
-#### 4.2 Procedimiento Legal
+Se permite:
+- instalar y ejecutar el Software en equipos de propiedad del usuario;
+- modificarlo exclusivamente para uso personal;
+- adaptar el Software a necesidades privadas, siempre que no exista finalidad comercial.
 
-El Distribuidor Original se reserva el derecho a:
+### 3.2 Uso Educativo
 
-1. **Notificación Formal**: Enviar comunicado de cese de actividades
-2. **Demanda Civil**: Presentar denuncia ante juzgados civiles
-3. **Acción Criminal**: Presentar denuncia por fraude, si aplica
-4. **Recuperación de Fondos**: Embargar bienes o ingresos
-5. **Daños Punitivos**: Solicitar multas adicionales (hasta 3x los daños probados)
+Se permite:
+- uso en aulas, cursos, talleres, capacitaciones y formación técnica;
+- aprendizaje personal o institucional;
+- desarrollo de proyectos académicos sin fines de lucro;
+- uso en trabajos universitarios, tesis, prácticas y material docente;
+- compartir el Software en entornos educativos, siempre que no se utilice con fines comerciales.
 
-#### 4.3 Responsabilidad Solidaria
+### 3.3 Investigación y Desarrollo Académico
 
-Si el Usuario autoriza a un tercero a usar el Software comercialmente:
-- El Usuario es **responsable solidario** de las acciones del tercero
-- Ambas partes pueden ser demandadas conjuntamente
-- La responsabilidad no se extingue por delegación
-
----
-
-### 5. Condiciones Especiales
-
-#### 5.1 Permiso para Uso Comercial
-
-Para obtener permiso de uso comercial, el Usuario **DEBE**:
-
-1. Contactar al Distribuidor Original: `lufcresposoliz@gmail.com`
-2. Solicitar **Licencia Comercial Especial**
-3. Negociar términos y contraprestación económica
-4. Firmar acuerdo comercial adicional
-5. **No hay garantía de aprobación**
-
-#### 5.2 Derivadas Académicas
-
-Personas o instituciones pueden crear derivadas si:
-- Mantienen esta licencia en el código derivado
-- Dan crédito explícito al Distribuidor Original
-- No comercializan la derivada
+Se permite:
+- análisis, estudio, investigación técnica y científica;
+- experimentación técnica y de ingeniería inversa con fines no comerciales;
+- documentación y presentación de resultados en contextos académicos, científicos o investigativos;
+- publicación de resultados siempre que se mantenga la atribución correcta al titular de los derechos.
 
 ---
 
-### 6. Exención de Responsabilidad
+## 4. Restricciones
 
-```
-EL SOFTWARE SE PROPORCIONA "TAL CUAL", SIN GARANTÍAS DE NINGÚN TIPO,
-EXPRESAS O IMPLÍCITAS, INCLUYENDO PERO NO LIMITADO A LAS GARANTÍAS
-DE COMERCIALIDAD, APTITUD PARA UN PROPÓSITO PARTICULAR Y NO INFRACCIÓN.
+Queda expresamente prohibido:
 
-EN NINGÚN CASO EL DISTRIBUIDOR ORIGINAL SERÁ RESPONSABLE POR:
-- Daños directos o indirectos
-- Pérdidas de datos
-- Interrupciones de negocio
-- Daños consecuentes
-```
+### 4.1 Uso Comercial
 
-**EXCEPTO:** En caso de demanda por mal uso comercial no autorizado, donde sí habrá responsabilidad del Usuario.
+No está permitido:
+- vender el Software o cualquier versión modificada;
+- comercializar copias, distribuciones o adaptaciones;
+- ofrecerlo como servicio remunerado;
+- usarlo en productos comerciales, soluciones empresariales o servicios de pago;
+- integrarlo en soluciones SaaS, plataformas, dispositivos o aplicaciones con fines de lucro;
+- monetizarlo mediante publicidad, suscripciones, licencias de pago, membresías o explotación comercial directa o indirecta.
 
----
+### 4.2 Redistribución Comercial
 
-### 7. Vigilancia y Cumplimiento
+No está permitido redistribuir el Software en ningún entorno comercial, marketplace, tienda digital, plataforma de venta o servicio que implique compensación económica sin autorización expresa.
 
-#### 7.1 Monitoreo
+### 4.3 Apropiación de Autoría
 
-El Distribuidor Original se reserva el derecho a:
-- Monitorear el uso del Software
-- Solicitar información de uso a través de canales públicos
-- Auditar repositorios y aplicaciones
-- Usar herramientas de detección de código similar
+No está permitido:
+- reclamar la autoría del Software original;
+- eliminar atribuciones, avisos, referencias o menciones al titular de los derechos;
+- presentar el Software como propio o como producto de terceros sin la debida atribución;
+- registrar el Software o cualquier derivado como propiedad propia sin autorización escrita.
 
-#### 7.2 Notificación de Infracciones
+### 4.4 Uso de Derivados para fines comerciales
 
-Si identifica uso no autorizado, enviará:
-1. Notificación vía GitHub Issues o email
-2. Plazo de 30 días para cesación
-3. Si no cumple → Procedimiento legal
+Cualquier derivado del Software, ya sea modificación, adaptación, integración, port, fork o versión personalizada, queda sujeto a la misma restricción y no podrá utilizarse con fines comerciales sin previa autorización escrita por parte del titular de los derechos.
 
 ---
 
-### 8. Duración y Terminación
+## 5. Atribución Obligatoria
 
-#### 8.1 Vigencia
-- Esta licencia es **perpetua** para usos académicos y personales
-- Los permisos comerciales se otorgan caso a caso
+Toda copia, adaptación, modificación, fork, documento de referencia o material derivado del Software debe conservar la siguiente atribución:
 
-#### 8.2 Revocación
-- El Distribuidor puede revocar permisos comerciales con aviso
-- **No puede revocar** permisos académicos de usuarios pasados
-- Los códigos derivados académicos mantienen licencia permanente
+“Software desarrollado por Luis Crespo Soliz. 
+Repositorio original: https://github.com/Luiscrespo-bot/Tira-led
+Licencia: LUEI – Licencia de Uso Educativo, Personal e Investigación.”
 
-#### 8.3 Rescisión
-Si el Usuario viola esta licencia:
-- Pierde automáticamente todos los permisos
-- Debe cesar distribución inmediatamente
-- Acciones legales se ejecutan sin necesidad de aviso adicional
+En caso de publicarse resultados, documentos o materiales derivados, debe mencionarse expresamente la fuente original y el titular de los derechos.
 
 ---
 
-### 9. Atribución Requerida
+## 6. Autorización Comercial
 
-Toda copia, derivada o uso debe incluir:
+Cualquier uso comercial requiere autorización previa y por escrito del titular de los derechos. La autorización comercial podrá ser otorgada o denegada a discreción del titular, y podrá establecer condiciones distintas, incluidas regalías, licencias exclusivas, condiciones de confidencialidad o restricciones específicas.
 
-```
-Basado en: Tira LED Reverse Engineering
-Distribuidor Original: Luis Crespo Soliz (Luiscrespo-bot)
-Repositorio: https://github.com/Luiscrespo-bot/Tira-led
-Licencia: LIAU (Licencia de Investigación Académica y Uso Personal)
+La ausencia de una autorización comercial escrita equivale a prohibición total de uso comercial.
+
+---
+
+## 7. Remedios Legales
+
+El incumplimiento de esta Licencia constituye una infracción de los derechos de autor y de propiedad intelectual del titular, y podrá dar lugar a:
+
+- cese inmediato del uso no autorizado;
+- eliminación o destrucción de copias no autorizadas;
+- indemnización por daños y perjuicios;
+- recuperación de ganancias obtenidas por el uso indebido;
+- cobro de costos legales y honorarios de representación;
+- acciones civiles y, en su caso, penales de acuerdo con la normativa aplicable.
+
+El titular de los derechos se reserva todas las acciones legales y medidas de protección que le correspondan en caso de uso indebido.
+
+---
+
+## 8. Responsabilidad
+
+EL SOFTWARE SE PROPORCIONA “TAL CUAL”, SIN GARANTÍAS DE NINGÚN TIPO, EXPRESAS O IMPLÍCITAS, INCLUYENDO, ENTRE OTRAS, GARANTÍAS DE COMERCIABILIDAD, IDONEIDAD PARA UN FIN DETERMINADO, NO INFRACCIÓN, EXACTITUD O AUSENCIA DE ERRORES.
+
+EL TITULAR NO SERÁ RESPONSABLE, EN NINGÚN CASO, DE DAÑOS DIRECTOS, INDIRECTOS, CONSECUENTES, INCIDENTALES, PUNITIVOS O DE OTRO TIPO QUE PUEDAN DERIVARSE DEL USO DEL SOFTWARE, INCLUSO, SIN LIMITACIÓN, PÉRDIDA DE DATOS, INTERRUPCIÓN DEL NEGOCIO, PÉRDIDAS ECONÓMICAS O DAÑOS A LA REPUTACIÓN.
+
+---
+
+## 9. Vigencia y Terminación
+
+Esta Licencia entra en vigor al momento en que el usuario accede, descarga, clona, modifica o utiliza el Software.
+
+La licencia se mantiene vigente mientras el usuario cumpla las condiciones aquí establecidas. En caso de incumplimiento, el titular podrá revocar de manera inmediata los permisos otorgados, sin perjuicio de las acciones legales que procedan.
+
+---
+
+## 10. Jurisdicción
+
+Cualquier conflicto relacionado con esta Licencia será resuelto conforme a la legislación aplicable en la jurisdicción del titular de los derechos y, en su caso, mediante los tribunales competentes del lugar de residencia del titular o del lugar donde se haya producido la infracción.
+
+---
+
+## 11. Aceptación
+
+Al descargar, clonar, instalar, utilizar, copiar, modificar, adaptar o distribuir el Software, el usuario acepta expresamente todas las condiciones de esta Licencia y reconoce que ha leído, entendido y aceptado sus términos.
+
+Si no está de acuerdo con estos términos, no debe usar, descargar, copiar ni modificar el Software.
+
+---
+
+## 12. Contacto para Autorización Comercial
+
+Para solicitar una licencia comercial, autorización de uso comercial o cualquier otra consulta legal, el usuario debe comunicarse con el titular de los derechos a través de:
+
+- Email: lufcresposoliz@gmail.com
+- GitHub: https://github.com/Luiscrespo-bot
+
+---
+
+## 13. Declaración Final
+
+Este documento constituye una licencia de uso restrictiva orientada a proteger los derechos del autor, mantener el acceso para fines educativos y de investigación, y reservar cualquier uso comercial a una autorización expresa y específica.
+
+El titular se reserva todos los derechos no expresamente otorgados por esta Licencia.
+
+---
+
 © 2026 Luis Crespo Soliz
-```
-
----
-
-### 10. Modificaciones a la Licencia
-
-El Distribuidor Original puede:
-- Actualizar esta licencia en cualquier momento
-- Los cambios aplican a **futuras descargas/clones**
-- Versiones previas mantienen licencia vigente al momento de descarga
-- Cambios se notificarán vía GitHub Releases
-
----
-
-### 11. Jurisdicción y Leyes Aplicables
-
-- **Leyes Aplicables**: Leyes de Bolivia (o del domicilio del Distribuidor)
-- **Foro Competente**: Juzgados civiles y penales competentes
-- **Resolución de Conflictos**: 
-  1. Negociación directa
-  2. Mediación
-  3. Demanda ante juzgados
-
----
-
-### 12. Casos de Estudio (Ejemplos de Infracciones)
-
-#### ❌ USO NO PERMITIDO:
-
-1. **App Móvil de Pago**
-   - Crear app Android/iOS que venda funcionalidades de control LED
-   - **Pena**: Demanda + devolución de ingresos + daños punitivos
-
-2. **Servicio en la Nube Comercial**
-   - Ofrecer "Panel de Control LED" como SaaS de pago
-   - **Pena**: Cese inmediato + resarcimiento económico
-
-3. **Integración en Producto IoT**
-   - Usar este código en dispositivos inteligentes vendidos
-   - **Pena**: Embargo de productos + daños por cada venta
-
-4. **Vender el Código**
-   - Publicitarlo como "Tira LED API" en marketplaces
-   - **Pena**: Máxima severidad legal + daños triples
-
-#### ✅ USO PERMITIDO:
-
-1. **Proyecto Universitario**
-   - Estudiante lo usa en tesis de ingeniería
-   - ✅ Completamente permitido
-
-2. **Aprendizaje Personal**
-   - Descargar y modificar para entender BLE
-   - ✅ Permitido sin restricciones
-
-3. **Investigación Abierta**
-   - Publicar un paper académico con mejoras
-   - ✅ Permitido (manteniendo licencia)
-
-4. **Solicitud Comercial**
-   - Contactar y negociar términos
-   - ✅ Posible con acuerdo separado
-
----
-
-### 13. Contacto y Consultas
-
-```
-Distribuidor Original: Luis Crespo Soliz
-Email: lufcresposoliz@gmail.com
-GitHub: https://github.com/Luiscrespo-bot
-Repositorio: https://github.com/Luiscrespo-bot/Tira-led
-
-Para consultas sobre:
-- Uso comercial: Enviar propuesta detallada
-- Violaciones: Reportar vía GitHub Issues
-- Preguntas legales: Contactar por email
-```
-
----
-
-### 14. Firma Digital y Aceptación
-
-**Al descargar, clonar o usar este Software, AUTOMÁTICAMENTE acepta:**
-- ✅ Todos los términos de esta licencia
-- ✅ Las restricciones comerciales
-- ✅ Las consecuencias por violación
-- ✅ La jurisdicción y leyes aplicables
-
-**No hay opción de "rechazar"** - si no está de acuerdo, **no use el Software**.
-
----
-
-### 15. Apéndice: Tabla de Severidades
-
-| Violación | Severidad | Acción Legal |
-|-----------|-----------|--------------|
-| Vender el código directamente | 🔴 CRÍTICA | Demanda inmediata + daños triples |
-| Usar en producto comercial sin permiso | 🔴 CRÍTICA | Embargo + indemnización |
-| Crear SaaS de pago | 🟠 ALTA | Cese + devolución de ingresos |
-| Integrar en app móvil comercial | 🟠 ALTA | Demanda civil + daños punitivos |
-| Falsificar autoría | 🟡 MEDIA | Corrección + denuncia |
-| Mal atribuir origen | 🟡 MEDIA | Notificación formal + corrección |
-| Uso académico sin crédito | 🟢 MENOR | Solicitud de atribución |
-
----
-
-## Declaración Final
-
-```
-╔═══════════════════════════════════════════════════════════════╗
-║  Esta licencia protege el trabajo intelectual del creador     ║
-║  y garantiza acceso abierto para fines académicos.            ║
-║                                                               ║
-║  Respeta los términos. No lo hagas comercial sin permiso.     ║
-║  Si lo haces, las consecuencias legales serán severas.        ║
-╚═══════════════════════════════════════════════════════════════╝
-```
-
----
-
-**Versión:** 1.0  
-**Fecha:** Octubre 2026  
-**Autor:** Luis Crespo Soliz  
-**Repositorio:** https://github.com/Luiscrespo-bot/Tira-led
+Todos los derechos reservados.
